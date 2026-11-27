@@ -1,0 +1,18 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CtrRtcLib
+  FILE_GUID                      = c700c644-0523-4359-9895-2e53997980b8
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = RealTimeClockLib
+  VERSION_STRING                 = 1.0
+
+[Sources]
+  CtrRtcLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec

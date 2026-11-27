@@ -1,0 +1,30 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CtrSec
+  FILE_GUID                      = 8ceb111d-6c44-49bb-8137-1cf17a881d61
+  MODULE_TYPE                    = SEC
+  VERSION_STRING                 = 1.0
+
+[Sources.ARM]
+  Entry.S
+  CtrSec.c
+
+[Packages]
+  CtrPkg/Ctr.dec
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+
+[LibraryClasses]
+  ArmLib
+  BaseLib
+  CtrProgressLib
+  BaseMemoryLib
+  HobLib
+  MemoryAllocationLib
+  PrePiHobListPointerLib
+  PrePiLib

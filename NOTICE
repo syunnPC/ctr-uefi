@@ -1,0 +1,180 @@
+CTR UEFI licensing and third-party notices
+=========================================
+
+CTR UEFI's original source is available under the GNU General Public
+License, version 2 or any later version (GPL-2.0-or-later). LICENSE
+contains version 2. The source files and the notices below identify the
+terms that apply to the incorporated third-party material.
+
+Firmware distributions must include LICENSE, NOTICE, and the applicable
+license texts from Licenses/. Provide the complete corresponding source
+for each released binary under the GPL, including the source for the
+matching project revision, the EDK II code and headers used from the
+two revisions below, the local patches, and the scripts used to build,
+link, and package the firmware. Run `make source-archive` from a Git
+checkout with initialized submodules and clean build inputs to create
+`build/ctr-uefi-source.tar.gz`. Run it from the same project working
+tree used to build the release binary. The archive takes project files
+from that working tree and upstream files from the commits recorded in
+the Git index. It contains the EDK II packages used by the firmware,
+the EDK II host build tools' source and configuration, and the pinned
+FatPkg source. Extract it and run `./build.sh` with the host build
+prerequisites, including `arm-none-eabi-gcc` 8 or later for
+`-ffile-prefix-map`. The build script can download Python 2.7 if a
+suitable interpreter is unavailable.
+
+EDK II core (BSD-2-Clause)
+------------------------
+
+Firmware modules, libraries and headers from ArmPkg, EmbeddedPkg, MdePkg
+and MdeModulePkg come from EDK II commit
+3ccd6d8b75b7fab66a35da9e77312eaca167c0f0. The files in patches/ modify
+this revision and carry the upstream source notices that apply to them.
+
+ArmPkg and EmbeddedPkg have identical package license texts, reproduced
+in Licenses/EDK-II-Arm.txt. MdePkg and MdeModulePkg have identical package
+license texts, reproduced in Licenses/EDK-II-Mde.txt. The distinct
+copyright notices from build inputs are reproduced below.
+
+The archive includes the IntelFrameworkPkg and IntelFrameworkModulePkg
+package declarations and headers used as build inputs by the pre-PI
+library. Each package directory retains its upstream BSD-2-Clause
+license text.
+
+Source
+https://github.com/tianocore/edk2/tree/3ccd6d8b75b7fab66a35da9e77312eaca167c0f0
+
+Copyright (c) 2006 - 2007, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2008, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2009, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2011, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2012, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2013, Intel Corporation. All rights reserved.
+Copyright (c) 2006 - 2014, Intel Corporation. All rights reserved.
+Copyright (c) 2006, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2008, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2010, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2011, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2012, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2013, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2014, Intel Corporation. All rights reserved.
+Copyright (c) 2007, Intel Corporation. All rights reserved.
+Copyright (c) 2008 - 2009, Apple Inc. All rights reserved.
+Copyright (c) 2008 - 2010, Apple Inc. All rights reserved.
+Copyright (c) 2008 - 2010, Intel Corporation. All rights reserved.
+Copyright (c) 2008, Apple Inc. All rights reserved.
+Copyright (c) 2008, Intel Corporation. All rights reserved.
+Copyright (c) 2009 - 2010, Apple Inc. All rights reserved.
+Copyright (c) 2009 - 2010, Intel Corporation. All rights reserved.
+Copyright (c) 2009 - 2012, Intel Corporation. All rights reserved.
+Copyright (c) 2009 - 2013, Intel Corporation. All rights reserved.
+Copyright (c) 2009, Apple Inc. All rights reserved.
+Copyright (c) 2009, Hewlett-Packard Company. All rights reserved.
+Copyright (c) 2009, Intel Corporation. All rights reserved.
+Copyright (c) 2010 - 2012, Intel Corporation. All rights reserved.
+Copyright (c) 2010, Apple Inc. All rights reserved.
+Copyright (c) 2010, Intel Corporation. All rights reserved.
+Copyright (c) 2011 - 2012, ARM Ltd. All rights reserved.
+Copyright (c) 2011 - 2013, ARM Limited. All rights reserved.
+Copyright (c) 2011 - 2013, ARM Ltd. All rights reserved.
+Copyright (c) 2011 - 2014, ARM Limited. All rights reserved.
+Copyright (c) 2011 - 2014, ARM Ltd. All rights reserved.
+Copyright (c) 2011, ARM Limited. All rights reserved.
+Copyright (c) 2011, ARM Ltd. All rights reserved.
+Copyright (c) 2011, ARM. All rights reserved.
+Copyright (c) 2011, Intel Corporation. All rights reserved.
+Copyright (c) 2011-2012, ARM Limited. All rights reserved.
+Copyright (c) 2011-2012, ARM Ltd. All rights reserved.
+Copyright (c) 2011-2013, ARM Limited. All rights reserved.
+Copyright (c) 2011-2013, ARM Ltd. All rights reserved.
+Copyright (c) 2012 - 2013, Intel Corporation. All rights reserved.
+Copyright (c) 2012, ARM Ltd. All rights reserved.
+Copyright (c) 2012, Intel Corporation. All rights reserved.
+Copyright (c) 2013 - 2014, Intel Corporation. All rights reserved.
+Copyright (c) 2013, ARM Limited. All rights reserved.
+Copyright (c) 2013, ARM Ltd. All rights reserved.
+Copyright (c) 2013, ARM. All rights reserved.
+Copyright (c) 2013, Intel Corporation. All rights reserved.
+Portions copyright (c) 2008 - 2009, Apple Inc. All rights reserved.
+Portions copyright (c) 2008 - 2010, Apple Inc. All rights reserved.
+Portions copyright (c) 2010, Apple Inc. All rights reserved.
+Portions copyright (c) 2011 - 2013, ARM Ltd. All rights reserved.
+Portions copyright (c) 2011, ARM Limited. All rights reserved.
+Portions copyright (c) 2013, ARM Ltd. All rights reserved.
+
+EDK II BaseTools and workspace setup
+-----------------------------------
+
+The corresponding source archive includes build-time tools from the
+same EDK II core revision. The BaseTools license is included at
+third_party/edk2/BaseTools/License.txt, and the archived files retain
+their upstream notices. The same license text applies to the upstream
+code in patches/genfw-relative-codeview.patch. LzmaCompress uses Igor
+Pavlov's public-domain LZMA SDK, whose notice is retained in
+LZMA-SDK-README.txt and the bundled SDK documentation.
+
+EDK II Arm compiler intrinsics
+-----------------------------
+
+The firmware links routines from ArmPkg/Library/CompilerIntrinsicsLib
+at the EDK II core revision above. The ArmPkg BSD terms apply to the
+EDK II port. The library includes routines derived from LLVM
+compiler-rt. The University of Illinois/NCSA Open Source License and
+its LLVM attribution are reproduced in Licenses/EDK-II-CompilerIntrinsics.txt.
+
+Source
+https://github.com/tianocore/edk2/tree/3ccd6d8b75b7fab66a35da9e77312eaca167c0f0/ArmPkg/Library/CompilerIntrinsicsLib
+
+libfdt (GPL-2.0-or-later OR BSD-2-Clause)
+-----------------------------------------
+
+The source archive includes libfdt from EmbeddedPkg/Library/FdtLib and
+its public headers from EmbeddedPkg/Include. Licenses/libfdt.txt contains
+the upstream copyright notices and dual-license terms. LICENSE contains
+the GNU GPL version 2. The EDK II integration files FdtLib.inf and
+libfdt_env.h use the EmbeddedPkg BSD terms in Licenses/EDK-II-Arm.txt.
+
+Source
+https://github.com/tianocore/edk2/tree/3ccd6d8b75b7fab66a35da9e77312eaca167c0f0/EmbeddedPkg
+
+EDK II enhanced FAT driver (BSD-2-Clause)
+----------------------------------------
+
+FatPkg/EnhancedFatDxe comes from EDK II commit
+ee3e5604cf2e3b79075cda62986b1fa627f21e09. This historical import
+explicitly relicensed the driver under BSD-2-Clause. The package
+notice at the pinned commit is in Licenses/EDK-II-FatPkg-Notice.txt.
+The complete license text from the subsequent clarification in
+EDK II commit 6e85d175b2e31203872486363e58a1bb58fdd8bf is in
+Licenses/EDK-II-FatPkg.txt.
+
+Source
+https://github.com/tianocore/edk2/tree/ee3e5604cf2e3b79075cda62986b1fa627f21e09/FatPkg
+
+Full license text
+https://github.com/tianocore/edk2/blob/6e85d175b2e31203872486363e58a1bb58fdd8bf/FatPkg/License.txt
+
+Copyright (c) 2005 - 2007, Intel Corporation. All rights reserved.
+Copyright (c) 2005 - 2011, Intel Corporation. All rights reserved.
+Copyright (c) 2005 - 2013, Intel Corporation. All rights reserved.
+Copyright (c) 2005 - 2014, Intel Corporation. All rights reserved.
+Copyright (c) 2005, Intel Corporation. All rights reserved.
+Copyright (c) 2006, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2013, Intel Corporation. All rights reserved.
+Copyright (c) 2007 - 2014, Intel Corporation. All rights reserved.
+
+ARM9 SD controller driver (MPL-2.0 OR GPL-2.0-or-later)
+----------------------------------------------------
+
+loader/SdTmio.c incorporates Normmatt's SD/MMC driver as carried by
+Luma3DS. The upstream driver offers the Mozilla Public License 2.0
+and the GPL, version 2 or later, as alternatives. This project retains
+both alternatives for loader/SdTmio.c. The GPL alternative applies to
+the combined firmware distribution. The license texts are in
+Licenses/MPL-2.0.txt and LICENSE.
+
+Copyright (c) 2014-2015, Normmatt
+
+Upstream source
+https://github.com/LumaTeam/Luma3DS/blob/c7790ee1d79574471f948e1078bb6f2c5c620e9b/arm9/source/fatfs/sdmmc/sdmmc.c

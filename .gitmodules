@@ -1,0 +1,8 @@
+[submodule "third_party/edk2"]
+	path = third_party/edk2
+	url = https://github.com/tianocore/edk2.git
+	shallow = true
+[submodule "third_party/edk2-fat"]
+	path = third_party/edk2-fat
+	url = https://github.com/tianocore/edk2.git
+	shallow = true

@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: BSD-2-Clause
+# Copyright (c) 2006 - 2013, Intel Corporation. All rights reserved.
+# Copyright (c) 2006 - 2014, Intel Corporation. All rights reserved.
+
+diff --git a/MdeModulePkg/Core/Dxe/DxeMain.inf b/MdeModulePkg/Core/Dxe/DxeMain.inf
+--- a/MdeModulePkg/Core/Dxe/DxeMain.inf
++++ b/MdeModulePkg/Core/Dxe/DxeMain.inf
+@@ -70,8 +70,10 @@
+ [Packages]
+   MdePkg/MdePkg.dec
+   MdeModulePkg/MdeModulePkg.dec
++  CtrPkg/Ctr.dec
+ 
+ [LibraryClasses]
++  CtrProgressLib
+   BaseMemoryLib
+   CacheMaintenanceLib
+   UefiDecompressLib
+diff --git a/MdeModulePkg/Core/Dxe/Dispatcher/Dispatcher.c b/MdeModulePkg/Core/Dxe/Dispatcher/Dispatcher.c
+--- a/MdeModulePkg/Core/Dxe/Dispatcher/Dispatcher.c
++++ b/MdeModulePkg/Core/Dxe/Dispatcher/Dispatcher.c
+@@ -38,6 +38,7 @@
+ **/
+ 
+ #include "DxeMain.h"
++#include <Library/CtrProgressLib.h>
+ 
+ //
+ // The Driver List contains one copy of every driver that has been discovered.
+@@ -493,6 +494,7 @@
+         // Update the driver state to reflect that it's been loaded
+         //
+         if (EFI_ERROR (Status)) {
++          CtrShowDxeProgress (CtrDxeLoadError, &DriverEntry->FileName, Status);
+           CoreAcquireDispatcherLock ();
+ 
+           if (Status == EFI_SECURITY_VIOLATION) {
+@@ -545,7 +547,9 @@
+           );
+         ASSERT (DriverEntry->ImageHandle != NULL);
+   
++        CtrShowDxeProgress (CtrDxeStart, &DriverEntry->FileName, EFI_SUCCESS);
+         Status = CoreStartImage (DriverEntry->ImageHandle, NULL, NULL);
++        CtrShowDxeProgress (CtrDxeReturn, &DriverEntry->FileName, Status);
+   
+         REPORT_STATUS_CODE_WITH_EXTENDED_DATA (
+           EFI_PROGRESS_CODE,
+diff --git a/MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c b/MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c
+--- a/MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c
++++ b/MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c
+@@ -13,6 +13,7 @@
+ **/
+ 
+ #include "DxeMain.h"
++#include <Library/CtrProgressLib.h>
+ 
+ //
+ // DXE Core Global Variables for Protocols from PEI
+@@ -247,6 +248,8 @@
+   EFI_VECTOR_HANDOFF_INFO       *VectorInfoList;
+   EFI_VECTOR_HANDOFF_INFO       *VectorInfo;
+ 
++  CtrShowDxeProgress (CtrDxeCore, NULL, EFI_SUCCESS);
++
+   //
+   // Setup the default exception handlers
+   //
+@@ -448,6 +451,7 @@
+   // Initialize the DXE Dispatcher
+   //
+   PERF_START (NULL,"CoreInitializeDispatcher", "DxeMain", 0) ;
++  CtrShowDxeProgress (CtrDxeDispatch, NULL, EFI_SUCCESS);
+   CoreInitializeDispatcher ();
+   PERF_END (NULL,"CoreInitializeDispatcher", "DxeMain", 0) ;
+ 
+@@ -478,6 +482,7 @@
+   //
+   Status = CoreAllEfiServicesAvailable ();
+   if (EFI_ERROR(Status)) {
++    CtrShowDxeProgress (CtrDxeMissingArch, NULL, Status);
+     //
+     // Report Status code that some Architectural Protocols are not present.
+     //
+@@ -486,6 +491,11 @@
+       (EFI_SOFTWARE_DXE_CORE | EFI_SW_DXE_CORE_EC_NO_ARCH)
+       );    
+   }
++  if (gBds == NULL) {
++    CtrShowDxeProgress (CtrDxeMissingBds, NULL, EFI_NOT_FOUND);
++    CpuDeadLoop ();
++  }
++
+   ASSERT_EFI_ERROR (Status);
+ 
+   //
+@@ -499,7 +509,9 @@
+   //
+   // Transfer control to the BDS Architectural Protocol
+   //
++  CtrShowDxeProgress (CtrDxeBdsHandoff, NULL, EFI_SUCCESS);
+   gBds->Entry (gBds);
++  CtrShowDxeProgress (CtrDxeBdsReturned, NULL, EFI_SUCCESS);
+ 
+   //
+   // BDS should never return

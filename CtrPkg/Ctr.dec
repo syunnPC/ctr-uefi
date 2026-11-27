@@ -1,0 +1,18 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = CtrPkg
+  PACKAGE_GUID                   = 960fc909-139c-46b3-b5ad-58e6cd76399e
+  PACKAGE_VERSION                = 0.1
+
+[Includes]
+  Include
+
+[LibraryClasses]
+  CtrProgressLib|Include/Library/CtrProgressLib.h
+
+[Guids]
+  gCtrDiagnosticsFileGuid = { 0xe79cc9be, 0x6ad7, 0x4140, { 0x8c, 0x55, 0x2b, 0xbf, 0x50, 0x04, 0x99, 0xe0 } }

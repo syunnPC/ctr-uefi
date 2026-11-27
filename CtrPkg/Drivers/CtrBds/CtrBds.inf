@@ -1,0 +1,48 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CtrBds
+  FILE_GUID                      = 7bb4d0f5-8f94-49df-84b1-f8800cfded31
+  MODULE_TYPE                    = DXE_DRIVER
+  ENTRY_POINT                    = CtrBdsInitialize
+  VERSION_STRING                 = 1.0
+
+[Sources]
+  CtrBds.c
+
+[Packages]
+  CtrPkg/Ctr.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  CtrProgressLib
+  DevicePathLib
+  MemoryAllocationLib
+  PcdLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+
+[Protocols]
+  gEfiBdsArchProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiSimpleFileSystemProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+
+[Guids]
+  gCtrDiagnosticsFileGuid
+
+[FixedPcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision
+
+[Depex]
+  TRUE

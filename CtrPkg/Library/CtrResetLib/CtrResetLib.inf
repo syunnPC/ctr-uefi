@@ -1,0 +1,34 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CtrResetLib
+  FILE_GUID                      = 057c42c9-08e5-4558-9ec5-c9a540ef5a94
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  LIBRARY_CLASS                  = EfiResetSystemLib
+  VERSION_STRING                 = 1.0
+
+[Sources]
+  CtrResetLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DxeServicesTableLib
+  IoLib
+  UefiBootServicesTableLib
+  UefiRuntimeLib
+
+[Guids]
+  gEfiEventVirtualAddressChangeGuid
+
+[Protocols]
+  gEfiCpuArchProtocolGuid
+
+[Depex]
+  gEfiCpuArchProtocolGuid

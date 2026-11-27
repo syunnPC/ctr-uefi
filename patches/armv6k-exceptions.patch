@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: BSD-2-Clause
+# Copyright (c) 2008 - 2010, Apple Inc. All rights reserved.
+
+--- a/ArmPkg/Drivers/CpuDxe/ArmV6/ExceptionSupport.S
++++ b/ArmPkg/Drivers/CpuDxe/ArmV6/ExceptionSupport.S
+@@ -203,8 +203,10 @@
+ // CommonExceptionEntry.
+ //
+ ASM_PFX(AsmCommonExceptionEntry):
++#if __ARM_ARCH >= 7
+   mrc       p15, 0, R1, c6, c0, 2   @ Read IFAR
+-  str       R1, [SP, #0x50]         @ Store it in EFI_SYSTEM_CONTEXT_ARM.IFAR 
++  str       R1, [SP, #0x50]         @ Store it in EFI_SYSTEM_CONTEXT_ARM.IFAR
++#endif
+   
+   mrc       p15, 0, R1, c5, c0, 1   @ Read IFSR
+   str       R1, [SP, #0x4c]         @ Store it in EFI_SYSTEM_CONTEXT_ARM.IFSR
+@@ -240,6 +242,14 @@
+ NoAdjustNeeded:
+ 
+   str       R5, [SP, #0x3c]         @ Store it in EFI_SYSTEM_CONTEXT_ARM.PC
++
++#if __ARM_ARCH < 7
++  @ ARM11 MPCore has no IFAR. For a prefetch abort the saved PC is the fault address.
++  cmp       R0, #3
++  moveq     R1, R5
++  movne     R1, #0
++  str       R1, [SP, #0x50]
++#endif
+   
+   add       R1, SP, #0x60           @ We pushed 0x60 bytes on the stack
+   str       R1, [SP, #0x34]         @ Store it in EFI_SYSTEM_CONTEXT_ARM.SP
+@@ -260,7 +270,10 @@
+   )
+ 
+ */  
++  mov       R4, SP                  @ Preserve the exception frame across the C call
++  bic       SP, SP, #7              @ Align the stack at the AAPCS call boundary
+   blx       ASM_PFX(CommonCExceptionHandler)  @ Call exception handler
++  mov       SP, R4
+ 
+ #if (FixedPcdGet32(PcdVFPEnabled))
+   vpop      {d0-d15}  

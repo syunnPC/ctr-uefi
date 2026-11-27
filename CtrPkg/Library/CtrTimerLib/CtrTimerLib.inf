@@ -1,0 +1,22 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CtrTimerLib
+  FILE_GUID                      = eab57362-c113-48ee-aa15-f28e9cdf6c6f
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = TimerLib
+  VERSION_STRING                 = 1.0
+
+[Sources]
+  CtrTimerLib.c
+
+[Packages]
+  CtrPkg/Ctr.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  IoLib

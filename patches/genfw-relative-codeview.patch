@@ -1,0 +1,95 @@
+# SPDX-License-Identifier: BSD-2-Clause
+# Copyright (c) 2010 - 2011, Intel Corporation. All rights reserved.
+# Portions copyright (c) 2013, ARM Ltd. All rights reserved.
+
+diff --git a/BaseTools/Source/C/GenFw/ElfConvert.c b/BaseTools/Source/C/GenFw/ElfConvert.c
+--- a/BaseTools/Source/C/GenFw/ElfConvert.c
++++ b/BaseTools/Source/C/GenFw/ElfConvert.c
+@@ -61,6 +61,24 @@
+ //*****************************************************************************
+ //
+ 
++// Keep machine-specific directory names out of the CodeView record.
++CONST CHAR8 *
++GetElfDebugFileName (
++  VOID
++  )
++{
++  CONST CHAR8 *Path;
++  CONST CHAR8 *Name;
++
++  Name = mInImageName;
++  for (Path = mInImageName; *Path != '\0'; Path++) {
++    if (*Path == '/' || *Path == '\\') {
++      Name = Path + 1;
++    }
++  }
++  return Name;
++}
++
+ VOID
+ CoffAddFixupEntry(
+   UINT16 Val
+diff --git a/BaseTools/Source/C/GenFw/ElfConvert.h b/BaseTools/Source/C/GenFw/ElfConvert.h
+--- a/BaseTools/Source/C/GenFw/ElfConvert.h
++++ b/BaseTools/Source/C/GenFw/ElfConvert.h
+@@ -60,6 +60,11 @@
+ //
+ // Common functions
+ //
++CONST CHAR8 *
++GetElfDebugFileName (
++  VOID
++  );
++
+ VOID
+ CoffAddFixup (
+   UINT32 Offset,
+diff --git a/BaseTools/Source/C/GenFw/Elf32Convert.c b/BaseTools/Source/C/GenFw/Elf32Convert.c
+--- a/BaseTools/Source/C/GenFw/Elf32Convert.c
++++ b/BaseTools/Source/C/GenFw/Elf32Convert.c
+@@ -978,7 +978,9 @@
+   EFI_IMAGE_DEBUG_DIRECTORY_ENTRY     *Dir;
+   EFI_IMAGE_DEBUG_CODEVIEW_NB10_ENTRY *Nb10;
+-
+-  Len = strlen(mInImageName) + 1;
++  CONST CHAR8                         *DebugFileName;
++
++  DebugFileName = GetElfDebugFileName ();
++  Len = strlen(DebugFileName) + 1;
+   DebugOffset = mCoffOffset;
+ 
+   mCoffOffset += sizeof(EFI_IMAGE_DEBUG_DIRECTORY_ENTRY)
+@@ -997,7 +999,7 @@
+ 
+   Nb10 = (EFI_IMAGE_DEBUG_CODEVIEW_NB10_ENTRY*)(Dir + 1);
+   Nb10->Signature = CODEVIEW_SIGNATURE_NB10;
+-  strcpy ((char *)(Nb10 + 1), mInImageName);
++  strcpy ((char *)(Nb10 + 1), DebugFileName);
+ 
+ 
+   NtHdr = (EFI_IMAGE_OPTIONAL_HEADER_UNION *)(mCoffFile + mNtHdrOffset);
+diff --git a/BaseTools/Source/C/GenFw/Elf64Convert.c b/BaseTools/Source/C/GenFw/Elf64Convert.c
+--- a/BaseTools/Source/C/GenFw/Elf64Convert.c
++++ b/BaseTools/Source/C/GenFw/Elf64Convert.c
+@@ -864,7 +864,9 @@
+   EFI_IMAGE_DEBUG_DIRECTORY_ENTRY     *Dir;
+   EFI_IMAGE_DEBUG_CODEVIEW_NB10_ENTRY *Nb10;
+-
+-  Len = strlen(mInImageName) + 1;
++  CONST CHAR8                         *DebugFileName;
++
++  DebugFileName = GetElfDebugFileName ();
++  Len = strlen(DebugFileName) + 1;
+   DebugOffset = mCoffOffset;
+ 
+   mCoffOffset += sizeof(EFI_IMAGE_DEBUG_DIRECTORY_ENTRY)
+@@ -883,7 +885,7 @@
+ 
+   Nb10 = (EFI_IMAGE_DEBUG_CODEVIEW_NB10_ENTRY*)(Dir + 1);
+   Nb10->Signature = CODEVIEW_SIGNATURE_NB10;
+-  strcpy ((char *)(Nb10 + 1), mInImageName);
++  strcpy ((char *)(Nb10 + 1), DebugFileName);
+ 
+ 
+   NtHdr = (EFI_IMAGE_OPTIONAL_HEADER_UNION *)(mCoffFile + mNtHdrOffset);

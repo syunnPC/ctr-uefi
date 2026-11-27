@@ -1,0 +1,34 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CtrConsole
+  FILE_GUID                      = e07f5176-9f9e-4311-ab80-02c5e0d8b245
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CtrConsoleEntryPoint
+
+[Sources]
+  CtrConsole.c
+  ConsoleLayout.h
+
+[Packages]
+  CtrPkg/Ctr.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  IoLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEfiDevicePathProtocolGuid
+  gEfiGraphicsOutputProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+
+[Depex]
+  TRUE

@@ -1,0 +1,80 @@
+## @file
+# SPDX-License-Identifier: GPL-2.0-or-later
+##
+
+[FD.CTR]
+BaseAddress          = 0x21000000
+Size                 = 0x00200000
+ErasePolarity        = 1
+BlockSize            = 0x1000
+NumBlocks            = 0x200
+
+0x00000000|0x00200000
+FV                   = FvMain
+
+[FV.FvMain]
+BlockSize            = 0x1000
+NumBlocks            = 0x200
+FvAlignment          = 16
+ERASE_POLARITY       = 1
+MEMORY_MAPPED        = TRUE
+STICKY_WRITE         = TRUE
+WRITE_ENABLED_CAP    = TRUE
+WRITE_STATUS         = TRUE
+READ_ENABLED_CAP     = TRUE
+READ_STATUS          = TRUE
+
+INF CtrPkg/Sec/CtrSec.inf
+INF MdeModulePkg/Core/Dxe/DxeMain.inf
+INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+INF CtrPkg/Drivers/CtrTimer/CtrTimer.inf
+INF CtrPkg/Drivers/CtrSd/CtrSd.inf
+INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
+INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
+INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
+INF MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariableRuntimeDxe.inf
+INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
+INF EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
+INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
+INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
+INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
+INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
+INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
+INF FatPkg/EnhancedFatDxe/Fat.inf
+INF CtrPkg/Drivers/CtrBds/CtrBds.inf
+INF CtrPkg/Drivers/CtrConsole/CtrConsole.inf
+INF CtrPkg/Application/CtrDiagnostics/CtrDiagnostics.inf
+
+[Rule.Common.SEC]
+  FILE SEC = $(NAMED_GUID) RELOCS_STRIPPED {
+    TE TE Align = 32 $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
+
+[Rule.Common.DXE_CORE]
+  FILE DXE_CORE = $(NAMED_GUID) {
+    PE32 PE32 $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
+
+[Rule.Common.DXE_DRIVER]
+  FILE DRIVER = $(NAMED_GUID) {
+    DXE_DEPEX DXE_DEPEX Optional $(INF_OUTPUT)/$(MODULE_NAME).depex
+    PE32 PE32 $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
+
+[Rule.Common.DXE_RUNTIME_DRIVER]
+  FILE DRIVER = $(NAMED_GUID) {
+    DXE_DEPEX DXE_DEPEX Optional $(INF_OUTPUT)/$(MODULE_NAME).depex
+    PE32 PE32 $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
+
+[Rule.Common.UEFI_APPLICATION]
+  FILE APPLICATION = $(NAMED_GUID) {
+    PE32 PE32 $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
+
+[Rule.Common.UEFI_DRIVER]
+  FILE DRIVER = $(NAMED_GUID) {
+    DXE_DEPEX DXE_DEPEX Optional $(INF_OUTPUT)/$(MODULE_NAME).depex
+    PE32 PE32 $(INF_OUTPUT)/$(MODULE_NAME).efi
+  }
