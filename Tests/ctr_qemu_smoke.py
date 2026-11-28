@@ -104,13 +104,16 @@ class SmokeTest:
                     raise RuntimeError("QTest rejected an ARM11 IRQ pulse")
 
     def service_sd(self):
-        request, _, lba = struct.unpack_from("<III", self.memory, SD_MAILBOX)
+        # ARM11 publishes Request after Lba. Read it in a separate aligned access.
+        request_word = ctypes.c_uint32.from_buffer(self.memory, SD_MAILBOX)
+        request = request_word.value
         if request == 0:
             return
         if request == 1:
             self.sd_probes += 1
         elif request == 2:
             self.sd_reads += 1
+            lba = ctypes.c_uint32.from_buffer(self.memory, SD_MAILBOX + 8).value
 
         last_lba = 0
         if self.disk is None:
@@ -130,7 +133,8 @@ class SmokeTest:
                 result = 2  # I/O error
         struct.pack_into("<I", self.memory, SD_MAILBOX + 4, result)
         struct.pack_into("<II", self.memory, SD_MAILBOX + 12, last_lba, 1)
-        struct.pack_into("<I", self.memory, SD_MAILBOX, 0)
+        # Publish the response with a single store after all its fields are ready.
+        request_word.value = 0
 
     def screen_line(self, row):
         characters = []

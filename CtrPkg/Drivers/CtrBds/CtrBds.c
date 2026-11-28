@@ -224,7 +224,7 @@ CtrBdsEntry (
   EFI_STATUS  Status;
   EFI_HANDLE  Image;
 
-  CtrShowBootProgress (CtrProgressBds);
+  CtrShowBootProgress (CtrProgressBds, EFI_SUCCESS);
   InitializeSystemTable ();
   ConnectDisks ();
   TryRemovableBoot ();

@@ -22,6 +22,7 @@
 #define STAGE_ROW      45
 #define ARCH_ROW       54
 #define EXCEPTION_ROW  63
+#define FIRMWARE_ROW   72
 
 STATIC CONST struct {
   UINT32         Data1;
@@ -194,9 +195,9 @@ DrawImage (
   DrawLine (Y, Line);
 }
 
+STATIC
 VOID
-EFIAPI
-CtrShowBootProgress (
+DrawBootMarker (
   IN CTR_BOOT_PROGRESS  Stage
   )
 {
@@ -223,9 +224,40 @@ CtrShowBootProgress (
       }
     }
   }
+}
 
-  if (Stage == CtrProgressBds) {
-    DrawLine (STAGE_ROW, "BDS entry");
+VOID
+EFIAPI
+CtrShowBootProgress (
+  IN CTR_BOOT_PROGRESS  Stage,
+  IN EFI_STATUS         Status
+  )
+{
+  CHAR8  Line[TEXT_COLUMNS + 1];
+
+  switch (Stage) {
+    case CtrProgressSecEntry:
+      DrawLine (FIRMWARE_ROW, "CTR UEFI handoff diagnostics");
+      DrawLine (STAGE_ROW, "SEC entry");
+      break;
+    case CtrProgressSec:
+      DrawBootMarker (Stage);
+      DrawLine (STAGE_ROW, "SEC MMU and caches enabled");
+      break;
+    case CtrProgressPrePi:
+      DrawLine (STAGE_ROW, "PrePi building HOBs");
+      break;
+    case CtrProgressDxeLoad:
+      DrawLine (STAGE_ROW, "PrePi loading DXE core");
+      break;
+    case CtrProgressDxeLoadReturned:
+      *AppendHex (AppendText (Line, "PrePi DXE load returned "), (UINT32)Status) = '\0';
+      DrawLine (STAGE_ROW, Line);
+      break;
+    case CtrProgressBds:
+      DrawBootMarker (Stage);
+      DrawLine (STAGE_ROW, "BDS entry");
+      break;
   }
 }
 

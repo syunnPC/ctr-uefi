@@ -10,7 +10,11 @@
 
 typedef enum {
   CtrProgressSec,
-  CtrProgressBds
+  CtrProgressBds,
+  CtrProgressSecEntry,
+  CtrProgressPrePi,
+  CtrProgressDxeLoad,
+  CtrProgressDxeLoadReturned
 } CTR_BOOT_PROGRESS;
 
 typedef enum {
@@ -28,7 +32,8 @@ typedef enum {
 VOID
 EFIAPI
 CtrShowBootProgress (
-  IN CTR_BOOT_PROGRESS  Stage
+  IN CTR_BOOT_PROGRESS  Stage,
+  IN EFI_STATUS         Status
   );
 
 VOID

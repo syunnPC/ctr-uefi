@@ -43,7 +43,9 @@ CtrSecMain (
   )
 {
   EFI_HOB_HANDOFF_INFO_TABLE  *Hobs;
+  EFI_STATUS                  Status;
 
+  CtrShowBootProgress (CtrProgressSecEntry, EFI_SUCCESS);
   ZeroMem ((VOID *)(UINTN)CTR_TT_BASE, SIZE_16KB);
   MapSections (0xFFF00000, CTR_VECTOR_SECTION, SECTION_SIZE, SECTION_NC);
   MapSections (0x10000000, 0x10000000, 0x00600000, SECTION_XN);
@@ -63,8 +65,9 @@ CtrSecMain (
   ArmInstructionSynchronizationBarrier ();
   ArmEnableInstructionCache ();
   ArmEnableDataCache ();
-  CtrShowBootProgress (CtrProgressSec);
+  CtrShowBootProgress (CtrProgressSec, EFI_SUCCESS);
 
+  CtrShowBootProgress (CtrProgressPrePi, EFI_SUCCESS);
   Hobs = HobConstructor (
            (VOID *)(UINTN)CTR_RAM_BASE,
            CTR_RAM_END - CTR_RAM_BASE,
@@ -86,6 +89,8 @@ CtrSecMain (
   BuildCpuHob (32, 0);
   BuildFvHob (CTR_FD_BASE, CTR_FD_SIZE);
 
-  LoadDxeCoreFromFv (NULL, 0);
+  CtrShowBootProgress (CtrProgressDxeLoad, EFI_SUCCESS);
+  Status = LoadDxeCoreFromFv (NULL, 0);
+  CtrShowBootProgress (CtrProgressDxeLoadReturned, Status);
   CpuDeadLoop ();
 }

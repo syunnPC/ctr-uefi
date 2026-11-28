@@ -17,21 +17,22 @@ test:
 
 SD_TEST_APP_BUILD_DIR ?= build/sd-test
 SD_TEST_APP_EDK := .deps/edk2-work
-SD_TEST_APP_GENFW := $(SD_TEST_APP_EDK)/BaseTools/Source/C/bin/GenFw
 CROSS_COMPILE ?= $(if $(wildcard .deps/toolchain/usr/bin/arm-none-eabi-gcc),.deps/toolchain/usr/bin/arm-none-eabi-,arm-none-eabi-)
+EFI_APP_GENFW := $(SD_TEST_APP_EDK)/BaseTools/Source/C/bin/GenFw
+EFI_APP_FLAGS := -mcpu=mpcore -mfloat-abi=soft -marm -mno-unaligned-access -O2 -ffreestanding -fshort-wchar \
+	-ffile-prefix-map="$(CURDIR)=." -fno-pic -fno-asynchronous-unwind-tables -nostdlib \
+	-I"$(SD_TEST_APP_EDK)/MdePkg/Include" -I"$(SD_TEST_APP_EDK)/MdePkg/Include/Arm" \
+	-Wl,-Ttext=0,-e,UefiMain,--emit-relocs,-z,noexecstack
 
 sd-test-app: $(SD_TEST_APP_BUILD_DIR)/BOOTARM.EFI
 
-$(SD_TEST_APP_GENFW):
+$(EFI_APP_GENFW):
 	@echo "Build the firmware first to build GenFw." >&2
 	@exit 1
 
-$(SD_TEST_APP_BUILD_DIR)/boot.elf: Tests/ctr_qemu_boot.c Makefile | $(SD_TEST_APP_GENFW)
+$(SD_TEST_APP_BUILD_DIR)/boot.elf: Tests/ctr_qemu_boot.c Makefile | $(EFI_APP_GENFW)
 	mkdir -p "$(@D)"
-	"$(CROSS_COMPILE)gcc" -mcpu=mpcore -mfloat-abi=soft -marm -O2 -ffreestanding -fshort-wchar \
-		-ffile-prefix-map="$(CURDIR)=." -fno-pic -fno-asynchronous-unwind-tables -nostdlib \
-		-I"$(SD_TEST_APP_EDK)/MdePkg/Include" -I"$(SD_TEST_APP_EDK)/MdePkg/Include/Arm" \
-		-Wl,-Ttext=0,-e,UefiMain,--emit-relocs -o "$@" "$<"
+	"$(CROSS_COMPILE)gcc" $(EFI_APP_FLAGS) -o "$@" "$<"
 
-$(SD_TEST_APP_BUILD_DIR)/BOOTARM.EFI: $(SD_TEST_APP_BUILD_DIR)/boot.elf $(SD_TEST_APP_GENFW)
-	"$(SD_TEST_APP_GENFW)" -e UEFI_APPLICATION -o "$@" "$<"
+$(SD_TEST_APP_BUILD_DIR)/BOOTARM.EFI: $(SD_TEST_APP_BUILD_DIR)/boot.elf $(EFI_APP_GENFW)
+	"$(EFI_APP_GENFW)" -e UEFI_APPLICATION -o "$@" "$<"
